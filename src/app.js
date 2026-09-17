@@ -8,7 +8,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
-import usersrouter from "../src/router/user.router.js";
+import usersroute from "../src/router/user.router.js";
+import transactionroute from "../src/router/transaction.route.js";
 // Router
-app.use("/api/v1/user", usersrouter);
+app.use("/api/v1/user", usersroute);
+app.use("/api/v1/transaction", transactionroute);
 export default app;

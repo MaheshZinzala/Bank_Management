@@ -98,7 +98,7 @@ const loginUser = async (req, res) => {
         .json({ message: "User not found please register" });
     }
 
-    const correctPassword = user.ispasswordCorrect(password);
+    const correctPassword = await user.ispasswordCorrect(password);
 
     if (!correctPassword) {
       return res.status(401).json({ message: "Email and password not valid" });
