@@ -10,7 +10,9 @@ app.use(cookieParser());
 
 import usersroute from "../src/router/user.router.js";
 import transactionroute from "../src/router/transaction.route.js";
+import dashboard from "../src/router/dashboard.router.js";
 // Router
 app.use("/api/v1/user", usersroute);
 app.use("/api/v1/transaction", transactionroute);
+app.use("", dashboard);
 export default app;
