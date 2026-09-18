@@ -201,4 +201,121 @@ const passbookApi = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-export { depositApi, withdrawalApi, passbookApi };
+
+const transacationWiseSearch = async (req, res) => {
+  try {
+    const { transaction_type } = req.query;
+
+    const findAccount = await Account.findOne({
+      user_id: req.user._id,
+    });
+
+    if (!findAccount) {
+      return res.status(404).json({
+        message: "Account not found",
+      });
+    }
+    const transaction = await Transaction.find({
+      account_id: findAccount._id,
+      transaction_type: transaction_type,
+    });
+
+    if (transaction.length === 0) {
+      return res.status(200).json({
+        message: "Not any transacrion",
+      });
+    }
+    res.status(200).json({
+      message: "Transaction fetch successfully",
+      transaction,
+    });
+  } catch (error) {
+    console.log("Error while searching transaction type");
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const descriptionWiseSearch = async (req, res) => {
+  try {
+    const { description } = req.query;
+
+    const findAccount = await Account.findOne({
+      user_id: req.user._id,
+    });
+
+    if (!findAccount) {
+      return res.status(404).json({
+        message: "Account not found",
+      });
+    }
+    const findDescription = await Transaction.find({
+      account_id: findAccount._id,
+      description: {
+        $regex: description,
+        $options: "i",
+      },
+    });
+    if (findDescription.length === 0) {
+      return res.status(200).json({
+        message: "No match any description",
+      });
+    }
+    res.status(200).json({
+      message: "description fetch successfully",
+      findDescription,
+    });
+  } catch (error) {
+    console.log("Error while searching description");
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+const dateWiseSearch = async (req, res) => {
+  try {
+    const { date } = req.query;
+
+    if (!date) {
+      return res.status(400).json({
+        message: "Date is required",
+      });
+    }
+    const findAccount = await Account.findOne({
+      user_id: req.user._id,
+    });
+
+    if (!findAccount) {
+      return res.status(404).json({
+        message: "Account not found",
+      });
+    }
+    const startDate = new Date(`${date}T00:00:00.000Z`);
+    const endDate = new Date(`${date}T23:59:59.999Z`);
+
+    const findDatewise = await Transaction.find({
+      account_id: findAccount._id,
+      createdAt: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    });
+    if (findDatewise.length === 0) {
+      return res.status(200).json({
+        message: "No match any date",
+      });
+    }
+    res.status(200).json({
+      message: "date fetch successfully",
+      findDatewise,
+    });
+  } catch (error) {
+    console.log("Error while searching date");
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+export {
+  depositApi,
+  withdrawalApi,
+  passbookApi,
+  transacationWiseSearch,
+  descriptionWiseSearch,
+  dateWiseSearch,
+};
