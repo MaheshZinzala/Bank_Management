@@ -6,7 +6,7 @@ const dashboardApi = async (req, res) => {
     const findAccount = await Account.findOne({ user_id: req.user._id });
 
     if (!findAccount) {
-      res.status(201).json({
+      res.status(401).json({
         message: "Account not found",
       });
     }
