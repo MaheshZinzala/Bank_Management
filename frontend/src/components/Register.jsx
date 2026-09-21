@@ -3,7 +3,7 @@ import { Button, Select, message } from "antd";
 
 function Register() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
+    <div className="flex min-h-screen mt-12 items-center justify-center bg-gray-100 p-4">
       <div className="w-full max-w-lg rounded-xl bg-white p-8 shadow-lg">
         <h1 className="mb-6 text-center text-2xl font-bold text-gray-800">
           Create an Account
