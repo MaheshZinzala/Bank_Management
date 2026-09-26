@@ -6,7 +6,7 @@ function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="bg-slate-900 fixed top-0 w-full  p-4 text-white">
+    <nav className="bg-slate-900 z-10 fixed top-0 w-full  p-4 text-white">
       <div className="flex w-full items-center justify-between">
         <div>
           <h1 className="text-xl font-bold">Bank Management</h1>
