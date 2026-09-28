@@ -1,5 +1,8 @@
 import { Button } from "antd";
+import axios from "axios";
 import { Formik, Form, Field, useFormik } from "formik";
+import { ToastContainer, toast } from "react-toastify";
+
 import * as Yup from "yup";
 
 const validationSchema = Yup.object().shape({
@@ -18,14 +21,32 @@ function Login() {
     handleBlur,
     handleSubmit,
     isSubmitting,
+    resetForm,
   } = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      console.log("Form submitted with values:", values);
+    onSubmit: async (values) => {
+      try {
+        const response = await axios.post("/api/v1/user/login", values);
+        toast.success(response.data.message, {
+          position: "top-center",
+          style: {
+            width: "80vh",
+          },
+        });
+        resetForm();
+      } catch (error) {
+        toast.error(error.response.data.message, {
+          position: "top-center",
+          style: {
+            width: "80vh",
+          },
+        });
+        console.log(error.response.data.message || "Something went wrong");
+      }
     },
   });
 
@@ -90,6 +111,7 @@ function Login() {
           >
             Login
           </Button>
+          <ToastContainer />
         </form>
 
         {/* Register Link */}

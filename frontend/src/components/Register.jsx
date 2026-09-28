@@ -1,7 +1,9 @@
-import { useState } from "react";
-import { Button, Select } from "antd";
-import { Formik, Form, Field, useFormik } from "formik";
+import { Button, message } from "antd";
+import { useFormik } from "formik";
 import * as Yup from "yup";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Full Name is required"),
@@ -30,6 +32,7 @@ const initialValues = {
 };
 
 function Register() {
+  const navigation = useNavigate();
   const {
     values,
     errors,
@@ -38,15 +41,24 @@ function Register() {
     handleBlur,
     handleSubmit,
     isSubmitting,
-    resetForm,
   } = useFormik({
     initialValues: initialValues,
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      console.log("Form submitted with values:", values);
-      resetForm();
+    onSubmit: async (values) => {
+      try {
+        const response = await axios.post("/api/v1/user/register", values);
+        toast.success(response.data.message || "User Register successfully", {
+          position: "top-center",
+        });
+        navigation("/");
+      } catch (error) {
+        toast.error(response.data.message || "User Register successfully", {
+          position: "top-center",
+        });
+      }
     },
   });
+
   return (
     <div className="flex min-h-screen mt-12 items-center justify-center bg-gray-100 p-4">
       <div className="w-full max-w-lg rounded-xl bg-white p-8 shadow-lg">
@@ -153,26 +165,28 @@ function Register() {
             </div>
           </div>
 
-          {/* Account Type */}
+          {/* Account Type - Tailwind CSS Select */}
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="account_type"
+              className="mb-1 block text-sm font-medium text-gray-700"
+            >
               Account Type
             </label>
-            <Select
-              placeholder="Select account type"
-              className="w-full"
-              size="large"
+            <select
+              id="account_type"
               name="account_type"
               value={values.account_type}
-              onChange={(value) =>
-                handleChange({ target: { name: "account_type", value } })
-              }
+              onChange={handleChange}
               onBlur={handleBlur}
-              options={[
-                { value: "savings", label: "Savings Account" },
-                { value: "current", label: "Current Account" },
-              ]}
-            />
+              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+              <option value="" disabled>
+                Select account type
+              </option>
+              <option value="saving">Savings Account</option>
+              <option value="current">Current Account</option>
+            </select>
             {errors.account_type && touched.account_type && (
               <div className="text-red-500 text-sm mt-1">
                 {errors.account_type}
@@ -182,26 +196,29 @@ function Register() {
 
           {/* Gender & City Grid */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {/* Gender - Tailwind CSS Select */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="gender"
+                className="mb-1 block text-sm font-medium text-gray-700"
+              >
                 Gender
               </label>
-              <Select
-                placeholder="Select gender"
-                className="w-full"
-                size="large"
+              <select
+                id="gender"
                 name="gender"
                 value={values.gender}
-                onChange={(value) =>
-                  handleChange({ target: { name: "gender", value } })
-                }
+                onChange={handleChange}
                 onBlur={handleBlur}
-                options={[
-                  { value: "male", label: "Male" },
-                  { value: "female", label: "Female" },
-                  { value: "other", label: "Other" },
-                ]}
-              />
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              >
+                <option value="" disabled>
+                  Select gender
+                </option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
               {errors.gender && touched.gender && (
                 <div className="text-red-500 text-sm mt-1">{errors.gender}</div>
               )}
@@ -259,6 +276,7 @@ function Register() {
             htmlType="submit"
             block
             size="large"
+            loading={isSubmitting}
             className="mt-2"
           >
             Register
