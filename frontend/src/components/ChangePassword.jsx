@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Button, message } from "antd";
 import { Formik, Form, Field, useFormik } from "formik";
 import * as Yup from "yup";
+import { toast, ToastContainer } from "react-toastify";
+import axios from "axios";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string().required("Current password is required"),
@@ -24,8 +26,28 @@ function ChangePassword() {
       newPassword: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      console.log("Form submitted with values:", values);
+    onSubmit: async (values) => {
+      try {
+        const response = await axios.post(
+          "/api/v1/user/changePassword",
+          values,
+        );
+        toast.success(response.data.message, {
+          position: "top-center",
+          style: {
+            width: "80vh",
+          },
+        });
+        resetForm();
+      } catch (error) {
+        toast.error(error.response.data.message, {
+          position: "top-center",
+          style: {
+            width: "80vh",
+          },
+        });
+        console.log(error.response.data.message || "Something went wrong");
+      }
     },
   });
 
@@ -84,6 +106,8 @@ function ChangePassword() {
               </div>
             )}
           </div>
+
+          <ToastContainer />
 
           {/* Submit Button */}
           <Button

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Button, message } from "antd";
 import { Formik, Form, Field, useFormik } from "formik";
 import * as Yup from "yup";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
 
 const validationSchema = Yup.object().shape({
   transaction_pin: Yup.string()
@@ -27,8 +29,25 @@ function ChangeTransactionPin() {
       newTransaction_pin: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      console.log("Form submitted with values:", values);
+    onSubmit: async (values) => {
+      try {
+        const response = await axios.post("/api/v1/user/changePin", values);
+        toast.success(response.data.message, {
+          position: "top-center",
+          style: {
+            width: "80vh",
+          },
+        });
+        resetForm();
+      } catch (error) {
+        toast.error(error.response.data.message, {
+          position: "top-center",
+          style: {
+            width: "80vh",
+          },
+        });
+        console.log(error.response.data.message || "Something went wrong");
+      }
     },
   });
 
@@ -95,6 +114,7 @@ function ChangeTransactionPin() {
           </div>
 
           {/* Submit Button */}
+          <ToastContainer />
           <Button
             type="primary"
             htmlType="submit"
