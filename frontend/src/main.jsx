@@ -15,8 +15,7 @@ import Login from "./components/Login.jsx";
 import Register from "./components/Register.jsx";
 import ChangePassword from "./components/ChangePassword.jsx";
 import ChangeTransactionPin from "./components/ChangeTransacrtionPin.jsx";
-import Deposit from "./components/Deposit.jsx";
-import Withdrawal from "./components/Withdrawal.jsx";
+import Transactions from "./components/Transactions.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -25,8 +24,7 @@ const router = createBrowserRouter(
       <Route path="/register" element={<Register />} />
       <Route path="/changePassword" element={<ChangePassword />} />
       <Route path="/changepin" element={<ChangeTransactionPin />} />
-      <Route path="/deposit" element={<Deposit />} />
-      <Route path="/withdrawal" element={<Withdrawal />} />
+      <Route path="/transactions" element={<Transactions />} />
       <Route path="/home" element={<Home />} />
     </Route>,
   ),
