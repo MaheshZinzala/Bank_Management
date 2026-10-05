@@ -1,6 +1,7 @@
 import { Button } from "antd";
 import axios from "axios";
 import { Formik, Form, Field, useFormik } from "formik";
+import { useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 
 import * as Yup from "yup";
@@ -50,6 +51,11 @@ function Login() {
     },
   });
 
+  useEffect(() => {
+    axios
+      .post("/api/v1/user/refresh-token", {})
+      .catch((err) => console.log("User is not logged in"));
+  }, []);
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
       <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">

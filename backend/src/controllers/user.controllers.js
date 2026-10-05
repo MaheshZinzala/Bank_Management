@@ -114,7 +114,8 @@ const loginUser = async (req, res) => {
 
     const options = {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     };
 
     res
@@ -124,8 +125,6 @@ const loginUser = async (req, res) => {
       .json({
         message: "User Login successfully",
         user: loggedInuser,
-        accessToken,
-        refreshToken,
       });
   } catch (error) {
     console.log("Error while login the user: ", error);
@@ -162,7 +161,7 @@ const logoutUser = async (req, res) => {
 const refreshAccessToken = async (req, res) => {
   try {
     const incomingRefreshToken =
-      req.cookie.refreshToken || req.body.refreshAccessToken;
+      req.cookies.refreshToken || req.body.refreshAccessToken;
     if (!incomingRefreshToken) {
       return res.status(401).json({ message: "Unauthorizes Request" });
     }
@@ -184,15 +183,16 @@ const refreshAccessToken = async (req, res) => {
       }
       const options = {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
       };
-      const { refreshToken, newrefreshToken } =
+      const { accessToken, refreshToken } =
         await generatAccessTokenandRefreshToken(user._id);
 
       return res
-        .status(2000)
+        .status(200)
         .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", newrefreshToken, options)
+        .cookie("refreshToken", refreshToken, options)
         .json({ message: "Access Token Refreshed" });
     } catch (error) {
       res.status(401).json({ message: "Invalid Refresh Token " });
