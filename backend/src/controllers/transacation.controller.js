@@ -4,7 +4,13 @@ import { Transaction } from "../models/transaction.model.js";
 const depositApi = async (req, res) => {
   try {
     const { transaction_type, description, transaction_pin, amount } = req.body;
-    if (!amount || !transaction_pin || !transaction_type || !description) {
+    const numericAmount = Number(amount);
+    if (
+      !numericAmount ||
+      !transaction_pin ||
+      !transaction_type ||
+      !description
+    ) {
       return res.status(401).json({ message: "All field are required" });
     }
     const findAccount = await Account.findOne({ user_id: req.user._id });
@@ -18,14 +24,14 @@ const depositApi = async (req, res) => {
     }
     if (findAccount.account_type === "saving") {
       if (findAccount.balance < 15000) {
-        if (amount >= 15000 && transaction_type === "deposit") {
-          findAccount.balance = findAccount.balance + amount;
+        if (numericAmount >= 15000 && transaction_type === "deposit") {
+          findAccount.balance = findAccount.balance + numericAmount;
           await findAccount.save();
           const transaction = await Transaction.create({
             account_id: findAccount._id,
             transaction_type,
             description,
-            amount: amount,
+            amount: numericAmount,
             after_balance: findAccount.balance,
           });
           res
@@ -39,13 +45,13 @@ const depositApi = async (req, res) => {
         }
       } else {
         if (transaction_type === "deposit") {
-          findAccount.balance = findAccount.balance + amount;
+          findAccount.balance = findAccount.balance + numericAmount;
           await findAccount.save();
           const transaction = await Transaction.create({
             account_id: findAccount._id,
             transaction_type,
             description,
-            amount: amount,
+            amount: numericAmount,
             after_balance: findAccount.balance,
           });
           res
@@ -56,14 +62,14 @@ const depositApi = async (req, res) => {
     } else {
       if (findAccount.account_type === "current") {
         if (findAccount.balance < 10000) {
-          if (amount >= 10000 && transaction_type === "deposit") {
-            findAccount.balance = findAccount.balance + amount;
+          if (numericAmount >= 10000 && transaction_type === "deposit") {
+            findAccount.balance = findAccount.balance + numericAmount;
             await findAccount.save();
             const transaction = await Transaction.create({
               account_id: findAccount._id,
               transaction_type,
               description,
-              amount: amount,
+              amount: numericAmount,
               after_balance: findAccount.balance,
             });
             res
@@ -77,13 +83,13 @@ const depositApi = async (req, res) => {
           }
         } else {
           if (transaction_type === "deposit") {
-            findAccount.balance = findAccount.balance + amount;
+            findAccount.balance = findAccount.balance + numericAmount;
             await findAccount.save();
             const transaction = await Transaction.create({
               account_id: findAccount._id,
               transaction_type,
               description,
-              amount: amount,
+              amount: numericAmount,
               after_balance: findAccount.balance,
             });
             res
@@ -102,7 +108,13 @@ const depositApi = async (req, res) => {
 const withdrawalApi = async (req, res) => {
   try {
     const { transaction_type, description, transaction_pin, amount } = req.body;
-    if (!amount || !transaction_pin || !transaction_type || !description) {
+    const numericAmount = Number(amount);
+    if (
+      !numericAmount ||
+      !transaction_pin ||
+      !transaction_type ||
+      !description
+    ) {
       return res.status(401).json({ message: "All field are required" });
     }
     const findAccount = await Account.findOne({ user_id: req.user._id });
@@ -117,7 +129,7 @@ const withdrawalApi = async (req, res) => {
     if (findAccount.account_type === "saving") {
       if (findAccount.balance > 15000) {
         if (transaction_type === "withdrawal") {
-          const new_balance = findAccount.balance - amount;
+          const new_balance = findAccount.balance - numericAmount;
           if (new_balance >= 15000) {
             findAccount.balance = new_balance;
             await findAccount.save();
@@ -125,7 +137,7 @@ const withdrawalApi = async (req, res) => {
               account_id: findAccount._id,
               transaction_type,
               description,
-              amount: amount,
+              amount: numericAmount,
               after_balance: findAccount.balance,
             });
             res.status(201).json({
@@ -147,7 +159,7 @@ const withdrawalApi = async (req, res) => {
       if (findAccount.account_type === "current") {
         if (findAccount.balance > 10000) {
           if (transaction_type === "withdrawal") {
-            const new_balance = findAccount.balance - amount;
+            const new_balance = findAccount.balance - numericAmount;
             if (new_balance >= 10000) {
               findAccount.balance = new_balance;
               await findAccount.save();
@@ -155,7 +167,7 @@ const withdrawalApi = async (req, res) => {
                 account_id: findAccount._id,
                 transaction_type,
                 description,
-                amount: amount,
+                amount: numericAmount,
                 after_balance: findAccount.balance,
               });
               res.status(201).json({
@@ -238,6 +250,11 @@ const transacationWiseSearch = async (req, res) => {
 const descriptionWiseSearch = async (req, res) => {
   try {
     const { description } = req.query;
+    if (typeof description !== "string" || !description.trim()) {
+      return res.status(400).json({
+        message: "Description is required",
+      });
+    }
 
     const findAccount = await Account.findOne({
       user_id: req.user._id,
@@ -251,7 +268,7 @@ const descriptionWiseSearch = async (req, res) => {
     const findDescription = await Transaction.find({
       account_id: findAccount._id,
       description: {
-        $regex: description,
+        $regex: description.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
         $options: "i",
       },
     });
@@ -265,7 +282,7 @@ const descriptionWiseSearch = async (req, res) => {
       findDescription,
     });
   } catch (error) {
-    console.log("Error while searching description");
+    console.error("Error while searching description:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

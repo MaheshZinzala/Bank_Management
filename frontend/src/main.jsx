@@ -9,13 +9,14 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
-import Home from "./components/Home.jsx";
 import Layout from "./components/Layout.jsx";
 import Login from "./components/Login.jsx";
 import Register from "./components/Register.jsx";
 import ChangePassword from "./components/ChangePassword.jsx";
 import ChangeTransactionPin from "./components/ChangeTransacrtionPin.jsx";
 import Transactions from "./components/Transactions.jsx";
+import Passbook from "./components/Passbook.jsx";
+import Dashboard from "./components/Dashboard.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -25,7 +26,8 @@ const router = createBrowserRouter(
       <Route path="/changePassword" element={<ChangePassword />} />
       <Route path="/changepin" element={<ChangeTransactionPin />} />
       <Route path="/transactions" element={<Transactions />} />
-      <Route path="/home" element={<Home />} />
+      <Route path="/passbook" element={<Passbook />} />
+      <Route path="/dashboard" element={<Dashboard />} />
     </Route>,
   ),
 );

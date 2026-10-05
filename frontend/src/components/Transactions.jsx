@@ -51,7 +51,7 @@ function Transactions() {
           },
         });
         setData({
-          transaction_type: "deposit",
+          transaction_type: "withdrawal",
           amount: "",
           transaction_pin: "",
           description: "",
@@ -81,7 +81,7 @@ function Transactions() {
 
         {/* Form */}
         <div className="rounded-2xl bg-white p-6 shadow-sm border border-slate-200 md:p-8">
-          <form className="space-y-5">
+          <form onSubmit={submitHandle} className="space-y-5">
             {/* Transaction Type */}
             <div>
               <label className="mb-2 block text-sm font-semibold text-slate-700">
@@ -177,7 +177,6 @@ function Transactions() {
 
             <button
               type="submit"
-              onClick={submitHandle}
               className={`w-full rounded-xl py-3.5 font-semibold text-white transition ${data.transaction_type === "deposit" ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"}`}
             >
               {data.transaction_type === "deposit"

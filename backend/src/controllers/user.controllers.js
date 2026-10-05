@@ -264,23 +264,23 @@ const changeTrasactionPin = async (req, res) => {
 
 const showBalance = async (req, res) => {
   try {
-    const { transaction_pin } = req.body;
-    if (!transaction_pin) {
-      return res.status(401).json({
-        message: "Transaction pin is required",
-      });
-    }
+    // const { transaction_pin } = req.body;
+    // if (!transaction_pin) {
+    //   return res.status(401).json({
+    //     message: "Transaction pin is required",
+    //   });
+    // }
     const findAccount = await Account.findOne({ user_id: req.user._id });
     if (!findAccount) {
       return res.status(401).json({
         message: "Your Account not found",
       });
     }
-    if (findAccount.transaction_pin !== transaction_pin) {
-      return res.status(401).json({
-        message: "Transaction pin is wrong",
-      });
-    }
+    // if (findAccount.transaction_pin !== transaction_pin) {
+    //   return res.status(401).json({
+    //     message: "Transaction pin is wrong",
+    //   });
+    // }
     const balance = findAccount.balance;
 
     res.status(201).json({

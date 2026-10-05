@@ -7,13 +7,9 @@ function Navbar() {
 
   return (
     <nav className="bg-slate-900 z-10 fixed top-0 w-full  p-4 text-white">
-      <div className="flex w-full items-center justify-between">
+      <div className="flex w-full container ms-auto me-auto items-center justify-between">
         <div>
           <h1 className="text-xl font-bold">Bank Management</h1>
-        </div>
-
-        <div className="hidden md:block md:w-75">
-          <Input.Search placeholder="Search..." size="middle" />
         </div>
 
         <div className="hidden md:block">
@@ -32,11 +28,6 @@ function Navbar() {
           open ? "block" : "hidden"
         } mt-4 border-t border-slate-700 pt-4 md:hidden`}
       >
-        {/* Mobile Search */}
-        <div className="w-full">
-          <Input.Search placeholder="Search..." size="middle" />
-        </div>
-
         {/* Mobile Login */}
         <div className="mt-4">
           <Button type="primary" className="w-full">

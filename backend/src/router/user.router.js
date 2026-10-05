@@ -17,6 +17,6 @@ router.route("/logout").get(verifyJWT, logoutUser);
 router.route("/refresh-token").post(refreshAccessToken);
 router.route("/changePassword").post(verifyJWT, changePassword);
 router.route("/changePin").post(verifyJWT, changeTrasactionPin);
-router.route("/showBalance").post(verifyJWT, showBalance);
+router.route("/showBalance").get(verifyJWT, showBalance);
 
 export default router;
