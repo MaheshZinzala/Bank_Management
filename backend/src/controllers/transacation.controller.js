@@ -218,6 +218,12 @@ const transacationWiseSearch = async (req, res) => {
   try {
     const { transaction_type } = req.query;
 
+    if (typeof transaction_type !== "string" || !transaction_type.trim()) {
+      return res.status(400).json({
+        message: "Transaction type is required",
+      });
+    }
+
     const findAccount = await Account.findOne({
       user_id: req.user._id,
     });
@@ -227,23 +233,31 @@ const transacationWiseSearch = async (req, res) => {
         message: "Account not found",
       });
     }
+
     const transaction = await Transaction.find({
       account_id: findAccount._id,
-      transaction_type: transaction_type,
+      transaction_type: {
+        $regex: transaction_type.trim(),
+        $options: "i",
+      },
     });
 
     if (transaction.length === 0) {
       return res.status(200).json({
-        message: "Not any transacrion",
+        message: "No transaction found",
+        transaction: [],
       });
     }
+
     res.status(200).json({
-      message: "Transaction fetch successfully",
+      message: "Transaction fetched successfully",
       transaction,
     });
   } catch (error) {
-    console.log("Error while searching transaction type");
-    res.status(500).json({ message: "Internal server error" });
+    console.log("Error while searching transaction type", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
   }
 };
 

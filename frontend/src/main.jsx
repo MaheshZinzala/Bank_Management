@@ -17,17 +17,53 @@ import ChangeTransactionPin from "./components/ChangeTransacrtionPin.jsx";
 import Transactions from "./components/Transactions.jsx";
 import Passbook from "./components/Passbook.jsx";
 import Dashboard from "./components/Dashboard.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
       <Route path="/" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/changePassword" element={<ChangePassword />} />
-      <Route path="/changepin" element={<ChangeTransactionPin />} />
-      <Route path="/transactions" element={<Transactions />} />
-      <Route path="/passbook" element={<Passbook />} />
-      <Route path="/dashboard" element={<Dashboard />} />
+      <Route
+        path="/changePassword"
+        element={
+          <ProtectedRoute>
+            <ChangePassword />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/changepin"
+        element={
+          <ProtectedRoute>
+            <ChangeTransactionPin />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/transactions"
+        element={
+          <ProtectedRoute>
+            <Transactions />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/passbook"
+        element={
+          <ProtectedRoute>
+            <Passbook />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
     </Route>,
   ),
 );

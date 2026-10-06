@@ -16,7 +16,7 @@ function Passbook() {
   const [data, setData] = useState([]);
   const [balance, setBalance] = useState([]);
   const [category, setCategory] = useState([]);
-  const searchRequestId = useRef(0);
+  const [search, setSearch] = useState("description");
 
   useEffect(() => {
     axios
@@ -70,21 +70,46 @@ function Passbook() {
   };
 
   const handleSearch = async (value) => {
-    const description = value.trim();
+    const searchValue = value.trim();
 
-    if (!description) {
+    if (!searchValue) {
       setCategory(data);
       return;
     }
 
     try {
-      const res = await axios.get("/api/v1/transaction/search/description", {
-        params: {
-          description: description,
-        },
-      });
+      // Description Search
+      if (search === "description") {
+        const res = await axios.get("/api/v1/transaction/search/description", {
+          params: {
+            description: searchValue,
+          },
+        });
 
-      setCategory(res.data.findDescription || []);
+        setCategory(res.data.findDescription || []);
+      }
+
+      // Transaction Search
+      else if (search === "transaction") {
+        const res = await axios.get("/api/v1/transaction/search/transaction", {
+          params: {
+            transaction_type: searchValue,
+          },
+        });
+
+        setCategory(res.data.transaction || []);
+      }
+
+      // Date Search
+      else if (search === "date") {
+        const res = await axios.get("/api/v1/transaction/search/date", {
+          params: {
+            date: searchValue,
+          },
+        });
+
+        setCategory(res.data.findDatewise || []);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -171,14 +196,36 @@ function Passbook() {
 
               {/* Search Bar & Dropdown UI Controls */}
               <div className="flex flex-col sm:flex-row items-center gap-3">
-                <Input
-                  placeholder="Search transactions..."
-                  prefix={<SearchOutlined className="text-slate-400" />}
-                  className="w-full sm:w-64 rounded-lg"
-                  size="middle"
-                  onChange={(e) => handleSearch(e.target.value)}
-                  allowClear
-                />
+                <div className="flex ps-3 h-11 w-full flex-1 items-center overflow-hidden rounded-xl border border-slate-300 bg-white shadow-sm transition-[border-color,box-shadow] duration-200 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100">
+                  {/* Category Select */}
+                  <Select
+                    defaultValue="description"
+                    variant="borderless"
+                    className="w-32 shrink-0 font-medium text-slate-700 md:w-36"
+                    options={[
+                      { value: "description", label: "Description" },
+                      { value: "transaction", label: "Transaction" },
+                      { value: "date", label: "Date" },
+                    ]}
+                    onChange={(value) => setSearch(value)}
+                  />
+                  {/* Divider */}
+                  <div className="h-5 w-[1px] bg-slate-200" />
+
+                  {/* Search Input */}
+                  <Input
+                    variant="borderless"
+                    placeholder="Search transactions..."
+                    onChange={(e) => handleSearch(e.target.value)}
+                    className="min-w-0 flex-1 px-3 text-slate-800 placeholder-slate-400 focus:shadow-none"
+                  />
+
+                  {/* Search Icon */}
+                  <div className="flex h-full shrink-0 items-center justify-center border-l border-slate-200 bg-slate-50 px-4 text-slate-500">
+                    <SearchOutlined className="text-base" />
+                  </div>
+                </div>
+
                 <Select
                   defaultValue="all"
                   className="w-full sm:w-40"

@@ -2,6 +2,7 @@ import { Button } from "antd";
 import axios from "axios";
 import { Formik, Form, Field, useFormik } from "formik";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 
 import * as Yup from "yup";
@@ -14,6 +15,7 @@ const validationSchema = Yup.object().shape({
 });
 
 function Login() {
+  const navigation = useNavigate();
   const {
     values,
     errors,
@@ -31,13 +33,17 @@ function Login() {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
-        const response = await axios.post("/api/v1/user/login", values);
+        const response = await axios.post("/api/v1/user/login", values, {
+          withCredentials: true,
+        });
+        localStorage.setItem("login", "true");
         toast.success(response.data.message, {
           position: "top-center",
           style: {
             width: "80vh",
           },
         });
+        navigation("/dashboard");
         resetForm();
       } catch (error) {
         toast.error(error.response.data.message, {
@@ -53,8 +59,19 @@ function Login() {
 
   useEffect(() => {
     axios
-      .post("/api/v1/user/refresh-token", {})
+      .post(
+        "/api/v1/user/refresh-token",
+        {},
+        {
+          withCredentials: true,
+        },
+      )
       .catch((err) => console.log("User is not logged in"));
+
+    let localVal = localStorage.getItem("login");
+    if (localVal) {
+      navigation("/dashboard");
+    }
   }, []);
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
