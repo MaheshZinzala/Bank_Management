@@ -23,5 +23,5 @@ import dashboard from "../src/router/dashboard.router.js";
 // Router
 app.use("/api/v1/user", usersroute);
 app.use("/api/v1/transaction", transactionroute);
-app.use("", dashboard);
+app.use("/api/v1", dashboard);
 export default app;
