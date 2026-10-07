@@ -37,6 +37,7 @@ function Login() {
           withCredentials: true,
         });
         localStorage.setItem("login", "true");
+        window.dispatchEvent(new Event("auth-change"));
         toast.success(response.data.message, {
           position: "top-center",
           style: {

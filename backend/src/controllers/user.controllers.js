@@ -292,6 +292,33 @@ const showBalance = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+const manageAccount = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("name email");
+    if (!user) {
+      return res.status(401).json({
+        message: "User not found",
+      });
+    }
+
+    const account = await Account.findOne({ user_id: req.user._id }).select(
+      "account_no account_type -_id",
+    );
+    if (!account) {
+      return res.status(401).json({
+        message: "Account not found",
+      });
+    }
+    res.status(200).json({
+      message: "Account details fetched successfully",
+      user,
+      account,
+    });
+  } catch (error) {
+    console.error("Error while fetching manage account:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 export {
   registerUser,
   loginUser,
@@ -300,4 +327,5 @@ export {
   changePassword,
   changeTrasactionPin,
   showBalance,
+  manageAccount,
 };

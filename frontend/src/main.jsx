@@ -18,6 +18,7 @@ import Transactions from "./components/Transactions.jsx";
 import Passbook from "./components/Passbook.jsx";
 import Dashboard from "./components/Dashboard.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import ManageAccount from "./components/ManageAccount.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -61,6 +62,14 @@ const router = createBrowserRouter(
         element={
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/manageAccount"
+        element={
+          <ProtectedRoute>
+            <ManageAccount />
           </ProtectedRoute>
         }
       />

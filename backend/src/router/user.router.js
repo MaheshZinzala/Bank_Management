@@ -4,6 +4,7 @@ import {
   changeTrasactionPin,
   loginUser,
   logoutUser,
+  manageAccount,
   refreshAccessToken,
   registerUser,
   showBalance,
@@ -18,5 +19,6 @@ router.route("/refresh-token").post(refreshAccessToken);
 router.route("/changePassword").post(verifyJWT, changePassword);
 router.route("/changePin").post(verifyJWT, changeTrasactionPin);
 router.route("/showBalance").get(verifyJWT, showBalance);
+router.route("/manageAccount").get(verifyJWT, manageAccount);
 
 export default router;
